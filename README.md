@@ -21,7 +21,7 @@ Build the app with a *minimum* of two screens:
 2. A screen that displays the details of a single article
 
 ### Requirement 3:
-Display all relevant data from the news article ensuring that the new source is credited.
+Display all relevant data from the news article ensuring that the news source is credited.
 
 ### Requirement 4:
 Submit a version of this app to us within ***one week*** of receiving it; however, the sooner we receive it the better.
