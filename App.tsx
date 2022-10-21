@@ -6,22 +6,28 @@ import { RootStackParamList } from './navigation/types';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
+import { screenDefaultOptions } from './utils/DesignSystem';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ConnectionStatusBar } from 'react-native-ui-lib';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const queryClient = new QueryClient();
 
-const App = (): JSX.Element => (
-  <>
-    <StatusBar style="auto" />
-    <NavigationContainer>
-      <QueryClientProvider client={queryClient}>
-        <RootStack.Navigator>
-          <RootStack.Screen name="Articles" component={ArticlesScreen} />
-          <RootStack.Screen name="ArticleDetails" component={ArticleDetailsScreen} />
+export const App = (): JSX.Element => (
+  <QueryClientProvider client={queryClient}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <StatusBar style="auto" />
+      <ConnectionStatusBar />
+      <NavigationContainer>
+        <RootStack.Navigator screenOptions={screenDefaultOptions()}>
+          <RootStack.Screen name="Headlines" component={ArticlesScreen} />
+          <RootStack.Group screenOptions={{ presentation: 'modal', headerShown: false }}>
+            <RootStack.Screen name="ArticleDetails" component={ArticleDetailsScreen} />
+          </RootStack.Group>
         </RootStack.Navigator>
-      </QueryClientProvider>
-    </NavigationContainer>
-  </>
+      </NavigationContainer>
+    </GestureHandlerRootView>
+  </QueryClientProvider>
 );
 
 export default App;

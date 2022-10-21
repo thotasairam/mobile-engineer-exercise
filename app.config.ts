@@ -4,8 +4,8 @@ import { ExpoConfig } from '@expo/config-types';
 // import { ExpoConfig } from 'expo/config';
 
 const config: ExpoConfig = {
-    name: 'fm-news',
-    slug: 'dev/@thotasairam/fm-news'
+  name: 'FM:News',
+  slug: 'fm-news',
 };
 
 export default config;

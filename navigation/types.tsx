@@ -1,8 +1,9 @@
 import { RouteProp } from '@react-navigation/native';
+import { Article } from '../types/NewsClient';
 
 export type RootStackParamList = {
-  Articles: undefined;
-  ArticleDetails: { articleId: number };
+  Headlines: undefined;
+  ArticleDetails: { article: Article };
 };
 
 export type ArticleDetailsProps = RouteProp<RootStackParamList, 'ArticleDetails'>;
