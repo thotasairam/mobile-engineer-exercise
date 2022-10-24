@@ -16,7 +16,7 @@ const queryClient = new QueryClient();
 export const App = (): JSX.Element => (
   <QueryClientProvider client={queryClient}>
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <StatusBar style="auto" />
+      <StatusBar style="dark" />
       <ConnectionStatusBar />
       <NavigationContainer>
         <RootStack.Navigator screenOptions={screenDefaultOptions()}>

@@ -5,7 +5,7 @@ import { Colors } from 'react-native-ui-lib';
 // Default options
 export const screenDefaultOptions = (): NativeStackNavigationOptions => ({
   headerShadowVisible: false,
-  headerTintColor: Colors.primary,
+  headerTintColor: Colors._black,
 
   // this setup makes large title work on iOS
   ...Platform.select({
