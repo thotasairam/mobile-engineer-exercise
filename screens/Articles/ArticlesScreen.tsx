@@ -1,25 +1,30 @@
-import { ActivityIndicator, StyleSheet } from 'react-native';
-import { useQuery } from 'react-query';
-import { Article, NewsClientResponse } from '../../types/NewsClient';
-import NewsService from '../../services/NewsService';
+import {
+  ActivityIndicator,
+  Button,
+  Image,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { Article } from '../../types/NewsClient';
 import { FlashList } from '@shopify/flash-list';
 import { useMemo, useState } from 'react';
-import { Button, Card, Text, View } from 'react-native-ui-lib';
 import { ListRenderItemInfo } from '@shopify/flash-list/src/FlashListProps';
 import { useNavigation } from '@react-navigation/native';
+import { usePaginatedHeadlines } from '../../hooks/usePaginatedHeadlines';
+import { articlesStyle } from './ArticlesStyle';
 
 export const ArticlesScreen = () => {
   const [page, setPage] = useState(1);
-  const { isLoading, data } = useQuery<NewsClientResponse, Error>(['top-headlines', page], () =>
-    NewsService.getHeadlines(page)
-  );
+  const { isLoading, data, isFetching } = usePaginatedHeadlines(page);
   const { navigate } = useNavigation();
 
   const pagerComponent = useMemo(
     () => (
-      <View row flex spread centerV margin-20>
+      <View style={articlesStyle.btnPage}>
         <Button
-          label={'Prev page'}
+          title={'Prev page'}
           onPress={() => {
             setPage(page - 1);
           }}
@@ -27,7 +32,7 @@ export const ArticlesScreen = () => {
         />
         <Text>{page}</Text>
         <Button
-          label={'Next page'}
+          title={'Next page'}
           onPress={() => {
             setPage(page + 1);
           }}
@@ -39,27 +44,34 @@ export const ArticlesScreen = () => {
   );
 
   const renderArticle = ({ item, index }: ListRenderItemInfo<Article>) => (
-    <Card key={index} margin-20 onPress={() => navigate('ArticleDetails', { article: item })}>
-      <Card.Section imageSource={{ uri: item.urlToImage }} imageStyle={{ height: 150 }} />
-      <View padding-20>
-        <Text text50 marginB-10>
-          {item.title}
+    <TouchableOpacity
+      key={index}
+      style={articlesStyle.detailsView}
+      onPress={() => navigate('ArticleDetails', { article: item })}>
+      <Image
+        testID={'itemImage'}
+        source={{ uri: item.urlToImage }}
+        style={articlesStyle.articleImage}
+      />
+      <View style={articlesStyle.listContentView}>
+        <Text style={articlesStyle.articleTitle}>{item.title}</Text>
+        {item.author && <Text style={articlesStyle.articleSource}>Author(s): {item.author}</Text>}
+        <Text style={articlesStyle.articleSource}>
+          Published on {new Date(item.publishedAt).toLocaleString()}
         </Text>
-        {item.author && <Text text90>Author(s): {item.author}</Text>}
-        <Text text80>Published on {new Date(item.publishedAt).toLocaleString()}</Text>
-        <Text text70>{item.description}</Text>
+        <Text style={articlesStyle.articleDescription}>{item.description}</Text>
       </View>
-    </Card>
+    </TouchableOpacity>
   );
 
   return (
-    <View style={articlesStyle.rootView}>
-      {isLoading ? (
-        <ActivityIndicator />
+    <SafeAreaView style={articlesStyle.rootView}>
+      {isLoading || isFetching ? (
+        <ActivityIndicator color={'black'} size={'large'} />
       ) : (
         <FlashList
           contentInsetAdjustmentBehavior={'always'}
-          data={data?.articles}
+          data={data?.articles?.filter((a) => a.source.id)}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={pagerComponent}
           renderItem={renderArticle}
@@ -68,12 +80,6 @@ export const ArticlesScreen = () => {
           estimatedItemSize={data?.totalResults}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 };
-
-const articlesStyle = StyleSheet.create({
-  rootView: {
-    flex: 1,
-  },
-});

@@ -1,8 +1,8 @@
 import { useRoute } from '@react-navigation/native';
 import { ArticleDetailsProps } from '../../navigation/types';
-import { Button, Card, Text, View } from 'react-native-ui-lib';
-import { Dimensions, Linking, ScrollView } from 'react-native';
+import { Button, Image, Linking, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import { useMemo } from 'react';
+import { articleDetailsStyle } from './ArticleDetailsStyle';
 
 const ArticleDetailsScreen = () => {
   const route = useRoute<ArticleDetailsProps>();
@@ -11,28 +11,23 @@ const ArticleDetailsScreen = () => {
 
   const getArticlesCard = useMemo(
     () => (
-      <Card>
-        <Card.Section
-          imageSource={{ uri: urlToImage }}
-          imageStyle={{ height: Dimensions.get('screen').height * 0.4 }}
+      <SafeAreaView>
+        <Image
+          source={{ uri: urlToImage }}
+          testID={'articleImage'}
+          style={articleDetailsStyle.articleImage}
         />
-        <View padding-20>
-          <Text text50 marginB-10>
-            {title}
+        <View style={articleDetailsStyle.detailsView}>
+          <Text style={articleDetailsStyle.articleTitle}>{title}</Text>
+          {author && <Text style={articleDetailsStyle.articleAuthor}>Author(s): {author}</Text>}
+          <Text style={articleDetailsStyle.articlePublishedAt}>
+            Published on {new Date(publishedAt).toLocaleString()}
           </Text>
-          {author && <Text text90>Author(s): {author}</Text>}
-          <Text text80>Published on {new Date(publishedAt).toLocaleString()}</Text>
-          <Text text70>{description}</Text>
-          <Text text70 marginT-20>
-            {content}
-          </Text>
-          <Button
-            marginT-15
-            marginB-15
-            label={'View More'}
-            onPress={() => Linking.openURL(url)}></Button>
+          <Text style={articleDetailsStyle.articleDescription}>{description}</Text>
+          <Text style={articleDetailsStyle.articleContent}>{content}</Text>
+          <Button title={'View More'} onPress={() => Linking.openURL(url)} />
         </View>
-      </Card>
+      </SafeAreaView>
     ),
     [urlToImage, url, title, publishedAt, content, description, author]
   );
